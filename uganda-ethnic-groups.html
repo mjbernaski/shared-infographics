@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uganda's Ethnic Tapestry</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f1118;
+    --card-bg: #1a1d2b;
+    --card-hover: #222640;
+    --accent-gold: #d4a24e;
+    --accent-red: #c0392b;
+    --accent-green: #27ae60;
+    --accent-blue: #2980b9;
+    --accent-purple: #8e44ad;
+    --accent-teal: #16a085;
+    --text-primary: #e8e6e1;
+    --text-secondary: #9a9a9a;
+    --text-muted: #666;
+    --border: rgba(255,255,255,0.06);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(212,162,78,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 20% 80%, rgba(39,174,96,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(41,128,185,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border: 1px solid rgba(212,162,78,0.3);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 32px;
+    backdrop-filter: blur(4px);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #f0c674 50%, var(--accent-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    max-width: 560px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 48px;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: bob 2s ease-in-out infinite;
+  }
+
+  .scroll-hint svg { opacity: 0.5; }
+
+  @keyframes bob {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ── Section ── */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .section-header p {
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ── Map Region Layout ── */
+  .map-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto 64px;
+  }
+
+  .map-svg { width: 100%; height: auto; }
+
+  .region-path {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    stroke: rgba(255,255,255,0.15);
+    stroke-width: 1.5;
+  }
+
+  .region-path:hover, .region-path.active {
+    filter: brightness(1.3);
+    stroke: rgba(255,255,255,0.4);
+    stroke-width: 2;
+  }
+
+  .region-label {
+    font-size: 11px;
+    fill: rgba(255,255,255,0.85);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    pointer-events: none;
+    text-anchor: middle;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ── Info Panel ── */
+  .info-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 700px;
+    margin: 0 auto;
+    min-height: 180px;
+    transition: all 0.3s ease;
+  }
+
+  .info-panel h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  .info-panel .region-tag {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .info-panel p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  /* ── Cards Grid ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .tribe-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tribe-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 14px 14px 0 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .tribe-card:hover {
+    background: var(--card-hover);
+    transform: translateY(-3px);
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  .tribe-card:hover::before { opacity: 1; }
+
+  .tribe-card[data-family="bantu"]::before { background: var(--accent-gold); }
+  .tribe-card[data-family="nilotic"]::before { background: var(--accent-blue); }
+  .tribe-card[data-family="sudanic"]::before { background: var(--accent-green); }
+  .tribe-card[data-family="other"]::before { background: var(--accent-purple); }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .card-tag {
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .tag-bantu { background: rgba(212,162,78,0.15); color: var(--accent-gold); }
+  .tag-nilotic { background: rgba(41,128,185,0.15); color: var(--accent-blue); }
+  .tag-sudanic { background: rgba(39,174,96,0.15); color: var(--accent-green); }
+  .tag-other { background: rgba(142,68,173,0.15); color: var(--accent-purple); }
+
+  .card-region {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .card-desc {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.65;
+    display: none;
+  }
+
+  .tribe-card.expanded .card-desc { display: block; }
+
+  .card-detail {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+  }
+
+  .detail-item svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.5;
+  }
+
+  /* ── Timeline ── */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent-gold), var(--accent-blue), var(--accent-green));
+    border-radius: 2px;
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .tl-dot {
+    position: absolute;
+    left: -34px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent-gold);
+  }
+
+  .tl-year {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent-gold);
+    margin-bottom: 4px;
+  }
+
+  .tl-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* ── Key Themes ── */
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .theme-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    transition: all 0.3s;
+  }
+
+  .theme-card:hover {
+    background: var(--card-hover);
+  }
+
+  .theme-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    font-size: 1.3rem;
+  }
+
+  .theme-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+  }
+
+  .theme-card p {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  /* ── Population Bar Chart ── */
+  .pop-chart {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .pop-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .pop-label {
+    width: 110px;
+    text-align: right;
+    font-size: 0.85rem;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .pop-track {
+    flex: 1;
+    height: 28px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .pop-fill {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pop-fill.animated { /* width set by JS */ }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-gold), transparent);
+    margin: 0 auto 56px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .stat-row { gap: 24px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .timeline { padding-left: 32px; }
+    .pop-label { width: 80px; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════ HERO ═══════ -->
+<div class="hero">
+  <div class="hero-badge">East Africa</div>
+  <h1>Uganda's Ethnic<br><span>Tapestry</span></h1>
+  <p class="hero-sub">Over 50 distinct peoples — each with their own language, customs, and centuries of history — woven together in one of Africa's most culturally diverse nations.</p>
+  <div class="stat-row">
+    <div class="stat">
+      <div class="stat-num">56+</div>
+      <div class="stat-label">Ethnic Groups</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">43</div>
+      <div class="stat-label">Living Languages</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Historic Kingdoms</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">45M+</div>
+      <div class="stat-label">Population</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    Scroll to explore
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</div>
+
+<!-- ═══════ INTERACTIVE MAP ═══════ -->
+<section>
+  <div class="section-header">
+    <h2>Explore by Region</h2>
+    <p>Click on a region to learn about its peoples</p>
+  </div>
+
+  <div class="map-container">
+    <svg class="map-svg" viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg">
+      <!-- Simplified Uganda regions -->
+      <!-- Northern -->
+      <path class="region-path" id="region-north" d="M80,40 L420,40 L440,80 L420,160 L350,200 L300,180 L250,200 L200,180 L140,200 L80,160 Z" fill="rgba(41,128,185,0.25)" onclick="showRegion('north')"/>
+      <text class="region-label" x="260" y="120">Northern</text>
+
+      <!-- West Nile -->
+      <path class="region-path" id="region-westnile" d="M40,60 L80,40 L80,160 L40,200 L20,180 Z" fill="rgba(39,174,96,0.25)" onclick="showRegion('westnile')"/>
+      <text class="region-label" x="52" y="125" style="font-size:9px">W. Nile</text>
+
+      <!-- Eastern -->
+      <path class="region-path" id="region-east" d="M350,200 L440,180 L480,280 L460,380 L380,400 L330,340 L340,260 Z" fill="rgba(41,128,185,0.35)" onclick="showRegion('east')"/>
+      <text class="region-label" x="400" y="300">Eastern</text>
+
+      <!-- Central / Buganda -->
+      <path class="region-path" id="region-central" d="M200,180 L300,180 L340,260 L330,340 L300,380 L220,400 L180,360 L160,280 Z" fill="rgba(212,162,78,0.3)" onclick="showRegion('central')"/>
+      <text class="region-label" x="250" y="290">Central</text>
+      <circle cx="255" cy="310" r="4" fill="var(--accent-gold)" opacity="0.7"/>
+      <text x="268" y="314" fill="var(--accent-gold)" font-size="9" font-family="DM Sans" opacity="0.8">Kampala</text>
+
+      <!-- Western -->
+      <path class="region-path" id="region-west" d="M40,200 L140,200 L160,280 L180,360 L160,440 L100,480 L40,440 L20,340 Z" fill="rgba(212,162,78,0.2)" onclick="showRegion('west')"/>
+      <text class="region-label" x="100" y="340">Western</text>
+
+      <!-- Southwest -->
+      <path class="region-path" id="region-southwest" d="M100,480 L160,440 L220,460 L240,540 L200,580 L120,560 L80,520 Z" fill="rgba(142,68,173,0.25)" onclick="showRegion('southwest')"/>
+      <text class="region-label" x="165" y="520" style="font-size:9px">Southwest</text>
+
+      <!-- South -->
+      <path class="region-path" id="region-south" d="M220,400 L300,380 L380,400 L400,460 L340,520 L240,540 L220,460 Z" fill="rgba(212,162,78,0.25)" onclick="showRegion('south')"/>
+      <text class="region-label" x="310" y="460">South</text>
+
+      <!-- Northeast (Karamoja) -->
+      <path class="region-path" id="region-northeast" d="M420,40 L480,60 L490,180 L440,180 L420,160 Z" fill="rgba(192,57,43,0.25)" onclick="showRegion('northeast')"/>
+      <text class="region-label" x="458" y="115" style="font-size:8px">Karamoja</text>
+
+      <!-- Lake Victoria hint -->
+      <ellipse cx="340" cy="550" rx="80" ry="40" fill="rgba(41,128,185,0.1)" stroke="rgba(41,128,185,0.15)" stroke-width="1"/>
+      <text x="340" y="555" text-anchor="middle" fill="rgba(41,128,185,0.4)" font-size="9" font-family="DM Sans">L. Victoria</text>
+    </svg>
+  </div>
+
+  <div class="info-panel" id="infoPanel">
+    <h3 id="panelTitle">Select a Region</h3>
+    <div class="region-tag" id="panelTag" style="display:none;"></div>
+    <p id="panelText">Click on any region of the map above to discover its peoples, kingdoms, and cultural traditions.</p>
+  </div>
+</section>
+
+<!-- ═══════ POPULATION ═══════ -->
+<section>
+  <div class="section-header">
+    <h2>Largest Ethnic Groups</h2>
+    <p>Approximate share of national population</p>
+  </div>
+  <div class="divider"></div>
+
+  <div class="pop-chart" id="popChart">
+    <div class="pop-bar-row">
+      <div class="pop-label">Baganda</div>
+      <div class="pop-track"><div class="pop-fill" data-width="68%" style="background: linear-gradient(90deg, rgba(212,162,78,0.7), rgba(212,162,78,0.3));">~17%</div></div>
+    </div>
+    <div class="pop-bar-row">
+      <div class="pop-label">Iteso</div>
+      <div class="pop-track"><div class="pop-fill" data-width="38%" style="background: linear-gradient(90deg, rgba(41,128,185,0.7), rgba(41,128,185,0.3));">~8%</div></div>
+    </div>
+    <div class="pop-bar-row">
+      <div class="pop-label">Banyankole</div>
+      <div class="pop-track"><div class="pop-fill" data-width="38%" style="background: linear-gradient(90deg, rgba(212,162,78,0.7), rgba(212,162,78,0.3));">~8%</div></div>
+    </div>
+    <div class="pop-bar-row">
+      <div class="pop-label">Basoga</div>
+      <div class="pop-track"><div class="pop-fill" data-width="35%" style="background: linear-gradient(90deg, rgba(212,162,78,0.7), rgba(212,162,78,0.3));">~7%</div></div>
+    </div>
+    <div class="pop-bar-row">
+      <div class="pop-label">Bakiga</div>
+      <div class="pop-track"><div class="pop-fill" data-width="30%" style="background: linear-gradient(90deg, rgba(212,162,78,0.7), rgba(212,162,78,0.3));">~6%</div></div>
+    </div>
+    <div class="pop-bar-row">
+      <div class="pop-label">Langi</div>
+      <div class="pop-track"><div class="pop-fill" data-width="28%" style="background: linear-gradient(90deg, rgba(41,128,185,0.7), rgba(41,128,185,0.3));">~6%</div></div>
+    </div>
+    <div class="pop-bar-row">
+      <div class="pop-label">Acholi</div>
+      <div class="pop-track"><div class="pop-fill" data-width="22%" style="background: linear-gradient(90deg, rgba(41,128,185,0.7), rgba(41,128,185,0.3));">~5%</div></div>
+    </div>
+    <div class="pop-bar-row">
+      <div class="pop-label">Lugbara</div>
+      <div class="pop-track"><div class="pop-fill" data-width="18%" style="background: linear-gradient(90deg, rgba(39,174,96,0.7), rgba(39,174,96,0.3));">~4%</div></div>
+    </div>
+    <div class="pop-bar-row">
+      <div class="pop-label">Banyoro</div>
+      <div class="pop-track"><div class="pop-fill" data-width="14%" style="background: linear-gradient(90deg, rgba(212,162,78,0.7), rgba(212,162,78,0.3));">~3%</div></div>
+    </div>
+    <div class="pop-bar-row">
+      <div class="pop-label">Karamojong</div>
+      <div class="pop-track"><div class="pop-fill" data-width="10%" style="background: linear-gradient(90deg, rgba(192,57,43,0.7), rgba(192,57,43,0.3));">~2%</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ TRIBE CARDS ═══════ -->
+<section>
+  <div class="section-header">
+    <h2>Peoples & Kingdoms</h2>
+    <p>Click any card to learn more</p>
+  </div>
+  <div class="divider"></div>
+
+  <div class="cards-grid">
+    <div class="tribe-card" data-family="bantu" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Baganda</div>
+        <div class="card-tag tag-bantu">Bantu</div>
+      </div>
+      <div class="card-region">Central Uganda · Buganda Kingdom</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~17% of population</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Ruler: Kabaka</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">The largest single ethnic group, centered around Kampala. They have one of Africa's most sophisticated traditional monarchies with 52 clans tracing patrilineal descent. The Buganda Kingdom was a major power when British colonialists arrived and remains culturally influential today.</p>
+      </div>
+    </div>
+
+    <div class="tribe-card" data-family="bantu" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Banyankole</div>
+        <div class="card-tag tag-bantu">Bantu</div>
+      </div>
+      <div class="card-region">Southwestern Uganda · Ankole Kingdom</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~8% of population</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Ruler: Omugabe</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">Dominant in southwestern Uganda, traditionally divided between the pastoral Bahima (cattle-keepers) and the agricultural Bairu. Their long-horned Ankole cattle are iconic. The kingdom's social structure has deep pastoral roots tied to cattle wealth.</p>
+      </div>
+    </div>
+
+    <div class="tribe-card" data-family="bantu" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Basoga</div>
+        <div class="card-tag tag-bantu">Bantu</div>
+      </div>
+      <div class="card-region">Eastern Uganda · Near the Nile</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~7% of population</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Ruler: Kyabazinga</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">East of the Nile, the Basoga are closely related culturally to the Baganda and are organized around the Kyabazinga (paramount chief). Their territory includes the important source of the Nile at Jinja.</p>
+      </div>
+    </div>
+
+    <div class="tribe-card" data-family="bantu" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Banyoro</div>
+        <div class="card-tag tag-bantu">Bantu</div>
+      </div>
+      <div class="card-region">Western Uganda · Bunyoro-Kitara Kingdom</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~3% of population</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Ruler: Omukama</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">The Bunyoro-Kitara Kingdom was once the most powerful in the region, predating Buganda's rise. At its peak, it controlled vast territories across the Great Lakes region. Their ruler, the Omukama, maintained elaborate court traditions.</p>
+      </div>
+    </div>
+
+    <div class="tribe-card" data-family="bantu" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Bakiga</div>
+        <div class="card-tag tag-bantu">Bantu</div>
+      </div>
+      <div class="card-region">Far Southwest · Kigezi Highlands</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~6% of population</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3"/></svg> No centralized kingdom</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">Highland people of the far southwest, known for being fiercely independent and never having a centralized kingdom. They're associated with the Kigezi highlands near Bwindi Impenetrable Forest, home to mountain gorillas.</p>
+      </div>
+    </div>
+
+    <div class="tribe-card" data-family="nilotic" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Acholi</div>
+        <div class="card-tag tag-nilotic">Nilotic</div>
+      </div>
+      <div class="card-region">Northern Uganda · Acholiland</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~5% of population</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19V6l12-3v13M9 19c0 1.1-1.3 2-3 2s-3-.9-3-2 1.3-2 3-2 3 .9 3 2z"/></svg> Rich oral traditions</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">Northern Uganda's largest group, central to much of Uganda's modern political history, including the LRA conflict. They have a rich tradition of oral literature, dance, and music. The Acholi are known for the Bwola royal dance.</p>
+      </div>
+    </div>
+
+    <div class="tribe-card" data-family="nilotic" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Iteso</div>
+        <div class="card-tag tag-nilotic">Nilotic</div>
+      </div>
+      <div class="card-region">Eastern Uganda · Teso Sub-region</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~8% of population</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18"/></svg> Primarily agricultural</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">The second-largest ethnic group overall, the Iteso are predominantly in eastern Uganda's Teso sub-region. They are primarily agricultural people and share cultural ties with the Teso of Kenya.</p>
+      </div>
+    </div>
+
+    <div class="tribe-card" data-family="nilotic" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Karamojong</div>
+        <div class="card-tag tag-nilotic">Nilotic</div>
+      </div>
+      <div class="card-region">Arid Northeast · Karamoja</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~2% of population</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M9 12l2 2 4-4"/></svg> Semi-nomadic pastoralists</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">Semi-nomadic pastoralists in the arid northeast, culturally related to Kenya's Turkana. Known for maintaining traditional practices — including cattle raiding and elaborate body adornment — longer than most groups. Their way of life revolves around cattle.</p>
+      </div>
+    </div>
+
+    <div class="tribe-card" data-family="sudanic" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Lugbara</div>
+        <div class="card-tag tag-sudanic">Sudanic</div>
+      </div>
+      <div class="card-region">West Nile Region</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~4% of population</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Ancestor-based spirituality</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">Northwestern group with distinct religious and social structures. The Lugbara are known for their ancestor-based spiritual practices, extensively documented by anthropologist John Middleton. They straddle the Uganda-DRC border.</p>
+      </div>
+    </div>
+
+    <div class="tribe-card" data-family="other" onclick="this.classList.toggle('expanded')">
+      <div class="card-top">
+        <div class="card-name">Batwa (Twa)</div>
+        <div class="card-tag tag-other">Indigenous</div>
+      </div>
+      <div class="card-region">Southwest · Forest Peoples</div>
+      <div class="card-detail">
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg> ~6,000 people</div>
+        <div class="detail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c-4.97 0-9-2.24-9-5v-4m18 4v4c0 2.76-4.03 5-9 5"/><path d="M12 14c-4.97 0-9-2.24-9-5s4.03-5 9-5 9 2.24 9 5"/></svg> Oldest inhabitants</div>
+      </div>
+      <div class="card-desc">
+        <p style="margin-top:14px;">Among Uganda's oldest inhabitants, historically forest-dwelling hunter-gatherers in the southwest. Significantly marginalized, especially after being displaced from Bwindi and Mgahinga forests for gorilla conservation. Their cultural survival is a pressing human rights issue.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ HISTORICAL TIMELINE ═══════ -->
+<section>
+  <div class="section-header">
+    <h2>Historical Context</h2>
+    <p>Key moments shaping Uganda's ethnic landscape</p>
+  </div>
+  <div class="divider"></div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">~1300s</div>
+      <div class="tl-text">The Bunyoro-Kitara Kingdom rises as the dominant power in the Great Lakes region, controlling trade routes and vast territories across what is now western Uganda.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">~1700s</div>
+      <div class="tl-text">The Buganda Kingdom begins its ascendancy, eventually eclipsing Bunyoro-Kitara through military innovation and strategic alliances. The Kabaka system is refined.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">1894</div>
+      <div class="tl-text">Britain declares Uganda a protectorate. Colonial boundaries group diverse ethnic communities into a single administrative unit, planting seeds of future tension.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">1962</div>
+      <div class="tl-text">Uganda gains independence with Milton Obote (Langi) as prime minister and the Kabaka of Buganda as president — an uneasy coalition across the north-south ethnic divide.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">1967</div>
+      <div class="tl-text">Obote abolishes all traditional kingdoms, centralizing power and removing the Buganda Kingdom, Ankole, Bunyoro, and Toro as political entities.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">1971–79</div>
+      <div class="tl-text">Idi Amin's rule, drawing support largely from West Nile groups (Lugbara, Madi, Kakwa). A period of widespread ethnic persecution.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">1993</div>
+      <div class="tl-text">Traditional kingdoms are restored as cultural institutions without formal political power under Museveni's government — a compromise between heritage and national unity.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ KEY THEMES ═══════ -->
+<section>
+  <div class="section-header">
+    <h2>Key Themes</h2>
+    <p>The forces shaping Uganda's ethnic tapestry</p>
+  </div>
+  <div class="divider"></div>
+
+  <div class="themes-grid">
+    <div class="theme-card">
+      <div class="theme-icon" style="background: rgba(212,162,78,0.12);">👑</div>
+      <h3>Kingdoms & Power</h3>
+      <p>Five historic kingdoms — Buganda, Bunyoro, Ankole, Toro, and Busoga — shape the south and west. Each has distinct traditions of governance, from the elaborate Buganda court to the pastoral Ankole system.</p>
+    </div>
+    <div class="theme-card">
+      <div class="theme-icon" style="background: rgba(41,128,185,0.12);">⚖️</div>
+      <h3>North–South Divide</h3>
+      <p>The broad Nilotic north versus Bantu south divide has shaped post-independence politics — from Obote's suspicion of Buganda to Amin's reliance on West Nile groups to Museveni's southern power base.</p>
+    </div>
+    <div class="theme-card">
+      <div class="theme-icon" style="background: rgba(39,174,96,0.12);">🌍</div>
+      <h3>Language Diversity</h3>
+      <p>Over 40 living languages across Bantu, Nilotic, and Sudanic families. English and Swahili serve as lingua francas, but local languages remain central to identity and daily life.</p>
+    </div>
+    <div class="theme-card">
+      <div class="theme-icon" style="background: rgba(142,68,173,0.12);">🏔️</div>
+      <h3>Displacement & Marginalization</h3>
+      <p>The Batwa — among Uganda's oldest inhabitants — were displaced from forests for gorilla conservation. Their story highlights tensions between environmental preservation and indigenous rights.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Uganda's Ethnic Tapestry · Interactive Infographic · Data is approximate
+</footer>
+
+<script>
+  // ── Region data ──
+  const regions = {
+    north: {
+      title: 'Northern Uganda',
+      tag: 'Nilotic Peoples',
+      tagColor: 'rgba(41,128,185,0.2)',
+      tagTextColor: '#2980b9',
+      text: 'Home to the Acholi and Langi peoples. The Acholi are central to modern Ugandan history and have rich traditions of oral literature and the celebrated Bwola royal dance. The Langi, often classified as Nilo-Hamitic, produced Milton Obote — Uganda\'s first prime minister. This region endured decades of conflict, including the LRA insurgency.'
+    },
+    westnile: {
+      title: 'West Nile Region',
+      tag: 'Sudanic Peoples',
+      tagColor: 'rgba(39,174,96,0.2)',
+      tagTextColor: '#27ae60',
+      text: 'The Lugbara and Madi peoples inhabit this northwestern corner. The Lugbara are known for their ancestor-based spiritual practices. This region was Idi Amin\'s home base — he drew support from the Kakwa, Lugbara, and Madi communities during his rule (1971–79). The Alur, one of the few Nilotic groups here, developed a centralized chieftainship system.'
+    },
+    east: {
+      title: 'Eastern Uganda',
+      tag: 'Mixed Nilotic & Bantu',
+      tagColor: 'rgba(41,128,185,0.2)',
+      tagTextColor: '#2980b9',
+      text: 'The Iteso — Uganda\'s second-largest ethnic group — dominate the Teso sub-region. Primarily agricultural people, they share cultural ties with Teso communities in Kenya. The Basoga people, organized under the Kyabazinga, live near the source of the Nile at Jinja.'
+    },
+    central: {
+      title: 'Central Uganda — Buganda',
+      tag: 'Bantu Kingdom',
+      tagColor: 'rgba(212,162,78,0.2)',
+      tagTextColor: '#d4a24e',
+      text: 'The heartland of the Baganda people and the powerful Buganda Kingdom. With 52 clans, a sophisticated monarchy led by the Kabaka, and Kampala as its center, Buganda is Uganda\'s most politically and culturally influential kingdom. The Baganda make up roughly 17% of the national population.'
+    },
+    west: {
+      title: 'Western Uganda',
+      tag: 'Bantu Kingdoms',
+      tagColor: 'rgba(212,162,78,0.2)',
+      tagTextColor: '#d4a24e',
+      text: 'Home to the Banyoro and Batoro peoples. The Bunyoro-Kitara Kingdom was once the region\'s most powerful, predating Buganda\'s rise. The Batoro, closely related to the Banyoro, are centered around Fort Portal and the spectacular Rwenzori Mountains — the "Mountains of the Moon."'
+    },
+    southwest: {
+      title: 'Southwest Uganda',
+      tag: 'Bantu & Indigenous',
+      tagColor: 'rgba(142,68,173,0.2)',
+      tagTextColor: '#8e44ad',
+      text: 'The Banyankole (Ankole) dominate this region, traditionally divided between pastoral Bahima and agricultural Bairu. The Bakiga inhabit the Kigezi highlands near Bwindi — they never had a centralized kingdom. The Batwa (Twa), among Uganda\'s oldest inhabitants, were displaced from forests here for gorilla conservation.'
+    },
+    south: {
+      title: 'Southern Uganda',
+      tag: 'Bantu Peoples',
+      tagColor: 'rgba(212,162,78,0.2)',
+      tagTextColor: '#d4a24e',
+      text: 'A continuation of Bantu-speaking territories stretching along the shores of Lake Victoria. This fertile region supports dense populations and has long been a crossroads of trade, migration, and cultural exchange between the Great Lakes kingdoms.'
+    },
+    northeast: {
+      title: 'Karamoja — The Northeast',
+      tag: 'Nilotic Pastoralists',
+      tagColor: 'rgba(192,57,43,0.2)',
+      tagTextColor: '#c0392b',
+      text: 'Home to the Karamojong — semi-nomadic pastoralists in Uganda\'s most arid region. Culturally related to Kenya\'s Turkana, they\'ve maintained traditional practices including cattle raiding and elaborate body adornment longer than most groups. Their way of life revolves almost entirely around cattle.'
+    }
+  };
+
+  function showRegion(key) {
+    const r = regions[key];
+    document.getElementById('panelTitle').textContent = r.title;
+    const tag = document.getElementById('panelTag');
+    tag.style.display = 'inline-block';
+    tag.textContent = r.tag;
+    tag.style.background = r.tagColor;
+    tag.style.color = r.tagTextColor;
+    document.getElementById('panelText').textContent = r.text;
+
+    // highlight active region
+    document.querySelectorAll('.region-path').forEach(p => p.classList.remove('active'));
+    document.getElementById('region-' + key).classList.add('active');
+  }
+
+  // ── Animate bars on scroll ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.pop-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width;
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(document.getElementById('popChart'));
+</script>
+</body>
+</html>
